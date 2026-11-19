@@ -1,0 +1,30 @@
+opencollection: 1.0.0
+
+info:
+  name: Sleep mode
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  variables:
+    - name: AUTH_DOMAIN
+      value: dit.ditdsiotdemo.com
+    - name: RI
+      value: "162692"
+    - name: id_token
+      value: eyJraWQiOiJWRFZwVWh3T0xScVF5NWVwRWt5MTQ4ZkRkRzFGTnNhbXNZUVl3WDc3UmRVPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmOWFhNTUzYy1hMDExLTcwMmQtYzA3Ny1kNGUxMTJhMDM0MDUiLCJhbXIiOlsicHdkIl0sImlzcyI6Imh0dHBzOi8vY29nbml0by1pZHAuYXAtc291dGhlYXN0LTEuYW1hem9uYXdzLmNvbS9hcC1zb3V0aGVhc3QtMV93aXJFenJUT1YiLCJjb2duaXRvOnVzZXJuYW1lIjoiMDAyNzc3OF90ZXN0X2lkIiwib3JpZ2luX2p0aSI6ImNlY2RlOTgxLTk2ZWItNDRmMC05MTFkLTUxOWIyZDFiYTJlMyIsImF1ZCI6IjJvamk1YWE0bzVmNzE4c25jZTQxMGcxcnZuIiwiYWNyIjoidXJuOmNvZ25pdG86bG9hOjEiLCJldmVudF9pZCI6IjFjODFlOGRmLTBhZTctNDY4OS1iYjk5LTRkYmRkNjczMzFlNyIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNzk0NDUxMjMyLCJuYW1lIjoiMDAyNzc3OCIsImV4cCI6MTc5NDQ1NjI0OCwiaWF0IjoxNzk0NDUyNjQ4LCJqdGkiOiI3ODEyYTQ0NC0xOGJkLTRmYWUtYmQwYy0wMTEzOTM1ZWIzNGIifQ.D46GBtIGyrPTCq5OHGnEkAGmLmuZfbdJxAr9Z6pj-mXIYWnQlaXPtOmmNi_7VQICV68DotNbTr0pRoxcWLeAaaDQa5b2uKgzgBg1keh3ED0cuWrdW9_iD0H5Y-zfggslhTJLgJ3y_SwKbOFF0pBp05cV0d3nyutOjB13BYzq16CQtKrIPSEKN_Qhk1bVKoN-U0A6lHzItJtPOri5dbQSP-qATTpmhnqaAhZ2XiQ5q5Fx-56Gzy6KrG-v4otwWlZ1h0uu6qn0K7iGjb53VGl3DJ8NzKodZMNgOy8gdAtx-mQ53TRUxGPEJ1NCAf-2pek2XXzNIs3ZRyjS2WuYTwpzDA
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

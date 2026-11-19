@@ -1,0 +1,114 @@
+info:
+  name: "dsiot: find ri of device"
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: https://{{API-ENDPOINT}}/dsiot/multireq
+  body:
+    type: json
+    data: "{\r
+
+      \    // \"requests\": [\r
+
+      \    //     {\"rqi\": \"1\", \"op\": 2, \"to\": \"/dsiot/edges/{{edges_ri}}/adr_0100.dgc_status\"}\r
+
+      \    // ]\r
+
+      \     \"requests\": [\r
+
+      \        {\"rqi\": \"1\", \"op\": 2, \"to\": \"/dsiot/edges\"}\r
+
+      \    ]\r
+
+      }"
+  auth:
+    type: bearer
+    token: "{{id_token_first}}"
+
+runtime:
+  variables:
+    - name: id_token_first
+      value: eyJraWQiOiJWRFZwVWh3T0xScVF5NWVwRWt5MTQ4ZkRkRzFGTnNhbXNZUVl3WDc3UmRVPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI3OTZhOTVkYy01MDcxLTcwYzctMmFjNC1jNmI3NzNjODYzNjkiLCJpc3MiOiJodHRwczovL2NvZ25pdG8taWRwLmFwLXNvdXRoZWFzdC0xLmFtYXpvbmF3cy5jb20vYXAtc291dGhlYXN0LTFfd2lyRXpyVE9WIiwiY29nbml0bzp1c2VybmFtZSI6IjAwMjc4MTFfdGVzdF9pZCIsIm9yaWdpbl9qdGkiOiJjMGYwZDNhOS0xNjMyLTQyOTItYTQzOS02N2QxNWY3ZjQ2OTIiLCJhdWQiOiIyb2ppNWFhNG81ZjcxOHNuY2U0MTBnMXJ2biIsImV2ZW50X2lkIjoiZmRkNTZlOWUtZWE0OS00ZWY1LWFjNDQtMzc5NmZmMTIyM2U2IiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE3ODg5NDc4MzEsIm5hbWUiOiIwMDI3ODExIiwiZXhwIjoxNzg4OTUxNDMxLCJpYXQiOjE3ODg5NDc4MzEsImp0aSI6IjkzZmNmMDIzLWViOWMtNGZjYy1iNTE1LWYwMGI5NDMxYjA1NCJ9.Uprl_v9PALvcpuyJTy1XUNPoyZ2nEgiOdCetZeZx43r2YGsm7Aku5mBspA92SD9OxVLiyrULIRMzgV1ff7PZwzsYzAR6dB3O3oiAgDt6ERXFFBMZqljUKB1Pu6_pPZxLSH3cUMPL2fpggjNL0nuYdrPa73xcEEwWRIBLxCU0QdpLUgOxqSQOjIglM8e36UqYs2zd778d9XQ_saIpNEXkvXgquIJRHxDgIKPRd1DWPIA3fBwoRIrmolJY_r8KvzLi6g6DKYboebRBnq-Kenkkjf2CW7_sfG_yWCEA0i2CXlxM-bNjYVC7z_4mIfeRCzaC7n8Qeg8YqMGXe0byNlAwMw
+    - name: API-ENDPOINT
+      value: dit.ditdsiotdemo.com
+  scripts:
+    - type: after-response
+      code: "const responseJson = res.getBody()\r
+
+        \r
+
+        test('', function () {\r
+
+        \    expect(res.getStatus()).to.be.oneOf([200])\r
+
+        \    expect(responseJson.responses).not.empty\r
+
+        \    expect(responseJson.responses[0].rsc).to.be.oneOf([2000])\r
+
+        \    expect(responseJson.responses[0].fr).eq('/dsiot/edges')\r
+
+        \    expect(responseJson.responses[0].rqi).not.empty\r
+
+        \    expect(responseJson.responses[0].pc).not.empty\r
+
+        \    expect(responseJson.responses[0].pc[0].ct).not.empty\r
+
+        \    expect(responseJson.responses[0].pc[0].ty).to.be.above(0)\r
+
+        \    expect(responseJson.responses[0].pc[0].ri).not.empty\r
+
+        \    expect(responseJson.responses[0].pc[0].rn).not.empty\r
+
+        \    expect(responseJson.responses[0].pc[0].pch).not.empty\r
+
+        \    expect(responseJson.responses[0].pc[0].cnst).to.be.above(-1)\r
+
+        \    expect(responseJson.responses[0].pc[0].ch[0].rn).not.empty\r
+
+        \    expect(responseJson.responses[0].pc[0].ch[0].ri).not.empty\r
+
+        \    expect(responseJson.responses[0].pc[0].ch[1].rn).not.empty\r
+
+        \    expect(responseJson.responses[0].pc[0].ch[1].ri).not.empty\r
+
+        })\r
+
+        \r
+
+        if (res.getStatus() === 200 && responseJson.responses[0].rsc) {\r
+
+        \    bru.setEnvVar('edge_ri', responseJson.responses[0].pc[0].ri)\r
+
+        \    bru.setEnvVar('edge_device_id', responseJson.responses[0].pc[0].pch[0].pch[7].pv)\r
+
+        \   // pm.environment.set('ch1_rn', responseJson.responses[0].pc[0].ch[0].rn)\r
+
+        \   //pm.environment.set('ch1_ri', responseJson.responses[0].pc[0].ch[0].ri)\r
+
+        \    // pm.environment.set('ch2_rn', responseJson.responses[0].pc[0].ch[1].rn)\r
+
+        \    // pm.environment.set('ch2_ri', responseJson.responses[0].pc[0].ch[1].ri)\r
+
+        } else {\r
+
+        \    bru.setEnvVar('edge_ri', '')\r
+
+        \    bru.setEnvVar('edge_device_id', '')\r
+
+        \   // pm.environment.set('ch1_rn', '')\r
+
+        \    //pm.environment.set('ch1_ri', '')\r
+
+        \  //  pm.environment.set('ch2_rn', '')\r
+
+        \   // pm.environment.set('ch2_ri', '')\r
+
+        }"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

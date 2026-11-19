@@ -1,0 +1,322 @@
+info:
+  name: "[DEV][POST] set_sleep_scene_settings"
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: https://{{AUTH_DOMAIN}}/dsiot/edge_commands/{{RI}}/set_scene_settings
+  body:
+    type: json
+    data: |-
+      {
+          "scene_settings": [
+              {
+                  "scene_no": 1,
+                  "name": "goodsleep",
+                  "rounds": [
+                      {
+                          "num": 1,
+                          "start_index": 1,
+                          "end_index": 9
+                      }
+                  ],
+                  "start_action": 1,
+                  "end_action": 1,
+                  "start_action_index": 0,
+                  "end_action_index": 10,
+                  "cancel_action": 1,
+                  "cancel_action_index": 11,
+                  "props": [
+                      "e_1002.e_A002.p_01",
+                      "e_1002.e_3001.p_01",
+                      "e_1002.e_3001.p_02",
+                      "e_1002.e_3003.p_C4",
+                      "e_1002.e_3003.p_3D",
+                      "e_1002.e_3003.p_24",
+                      "e_1003.e_3002.p_3D",
+                      "e_1002.e_3001.p_54",
+                      "e_1002.e_3001.p_05",
+                      "e_1003.e_3002.p_44",
+                      "e_1002.e_3001.p_09",
+                      "e_1002.e_3003.p_23"
+                  ],
+                  "allow_list": {
+                      "e_1002.e_3001.p_01": {
+                          "mi": "00",
+                          "mx": "04"
+                      },
+                      "e_1002.e_3001.p_09": {
+                          "mi": "00",
+                          "mx": "000C0000"
+                      },
+                      "e_1002.e_3003.p_24": {
+                          "mi": "00",
+                          "mx": "00"
+                      },
+                      "e_1003.e_3002.p_3D": {
+                          "mi": "00",
+                          "mx": "00"
+                      },
+                      "e_1002.e_3001.p_54": {
+                          "mi": "00",
+                          "mx": "01"
+                      },
+                      "e_1003.e_3002.p_44": {
+                          "mi": "00",
+                          "mx": "00"
+                      },
+                      "e_1002.e_3003.p_1D": {
+                          "mi": "00",
+                          "mx": "00"
+                      },
+                      "e_1002.e_3003.p_C4": {
+                          "mi": "01",
+                          "mx": "01"
+                      },
+                      "e_1002.e_3003.p_3D": {
+                          "mi": "00",
+                          "mx": "00"
+                      },
+                      "e_1002.e_3001.p_05": {
+                          "mi": "00",
+                          "mx": "01800000"
+                      },
+                      "e_1002.e_3001.p_02": {
+                          "mi": "37",
+                          "mx": "3B"
+                      },
+                      "e_1002.e_A002.p_01": {
+                          "mi": "01",
+                          "mx": "01"
+                      }
+                  },
+                  "items": [
+                      {
+                          "p": 1,
+                          "v": {
+                              "0": "01",
+                              "1": "02",
+                              "2": "39",
+                              "3": "01",
+                              "4": "00",
+                              "5": "00",
+                              "6": "00",
+                              "7": "00",
+                              "8": "0F",
+                              "9": "00",
+                              "10": "0A",
+                              "11": "01"
+                          }
+                      },
+                      {
+                          "p": 1800,
+                          "v": {
+                              "2": "3A"
+                          }
+                      },
+                      {
+                          "p": 1800,
+                          "v": {
+                              "2": "3B"
+                          }
+                      },
+                      {
+                          "p": 1800,
+                          "v": {
+                              "2": "39"
+                          }
+                      },
+                      {
+                          "p": 1800,
+                          "v": {
+                              "2": "38"
+                          }
+                      },
+                      {
+                          "p": 3600,
+                          "v": {
+                              "2": "37"
+                          }
+                      },
+                      {
+                          "p": 3600,
+                          "v": {
+                              "2": "38"
+                          }
+                      },
+                      {
+                          "p": 9181,
+                          "v": {
+                              "2": "39"
+                          }
+                      },
+                      {
+                          "p": 1800,
+                          "v": {
+                              "2": "3A"
+                          }
+                      },
+                      {
+                          "p": 1800,
+                          "v": {
+                              "2": "3B"
+                          }
+                      },
+                      {
+                          "p": 1,
+                          "v": {
+                              "3": "00",
+                              "2": "39",
+                              "11": "00"
+                          }
+                      },
+                      {
+                          "p": 5,
+                          "v": {
+                              "3": "00",
+                              "11": "00"
+                          }
+                      }
+                  ]
+              }
+          ]
+      }
+  auth:
+    type: bearer
+    token: "{{id_token}}"
+
+runtime:
+  scripts:
+    - type: before-request
+      code: "if (!bru.getEnvVar(\"waitDone\")) {\r
+
+        \    setTimeout(() => {\r
+
+        \        bru.setEnvVar(\"waitDone\", true);\r
+
+        \    }, 3000);\r
+
+        } else {\r
+
+        \    bru.deleteEnvVar(\"waitDone\");\r
+
+        }"
+    - type: after-response
+      code: "const responseJson = res.getBody();\r
+
+        \r
+
+        // ตรวจสอบ code และ rsc\r
+
+        test('Code and rsc are valid', function () {\r
+
+        \    expect(responseJson.rsc).to.equal(2000);\r
+
+        });\r
+
+        \r
+
+        // ตรวจสอบ homes array\r
+
+        test('Homes array is valid', function () {\r
+
+        \    expect(responseJson.homes).to.be.an('array');\r
+
+        });\r
+
+        \r
+
+        // ตรวจสอบ home object\r
+
+        const home = responseJson.homes[0];\r
+
+        test('Home object is valid', function () {\r
+
+        \    expect(home).to.have.property('id').that.is.a('string');\r
+
+        \    expect(home).to.have.property('data').that.is.an('object');\r
+
+        });\r
+
+        \r
+
+        // เก็บ home_id ลง environment\r
+
+        bru.setEnvVar(\"home_id_A\", home.id);\r
+
+        \r
+
+        // ตรวจสอบ rooms array\r
+
+        const rooms = home.data.rooms;\r
+
+        test('Rooms array is valid', function () {\r
+
+        \    expect(rooms).to.be.an('array').that.is.not.empty;\r
+
+        });\r
+
+        \r
+
+        // ตรวจสอบแต่ละ room\r
+
+        rooms.forEach((room, roomIndex) => {\r
+
+        \    test(`Room ${roomIndex} is valid`, function () {\r
+
+        \        expect(room).to.have.property('id').that.is.a('string');\r
+
+        \        expect(room).to.have.property('edges').that.is.an('array');\r
+
+        \    });\r
+
+        \r
+
+        \    // เก็บ room_id ตัวแรกลง environment (ถ้ามี)\r
+
+        \    if (roomIndex === 0) {\r
+
+        \        bru.setEnvVar(\"room_id\", room.id);\r
+
+        \    }\r
+
+        \r
+
+        \    // ตรวจสอบแต่ละ edge ใน room\r
+
+        \    room.edges.forEach((edge, edgeIndex) => {\r
+
+        \        test(`Edge ${edgeIndex} in Room ${roomIndex} is valid`, function () {\r
+
+        \            expect(edge).to.have.property('ref_id').that.is.a('string');\r
+
+        \        });\r
+
+        \r
+
+        \        // เก็บ ref_id ของ edge แรกตัวแรก\r
+
+        \        if (roomIndex === 0 && edgeIndex === 0) {\r
+
+        \            bru.setEnvVar(\"ref_id\", edge.ref_id);\r
+
+        \        }\r
+
+        \    });\r
+
+        });\r
+
+        bru.setEnvVar(\r
+
+        \    \"savedResponse\",\r
+
+        \    JSON.stringify(res.getBody())\r
+
+        );"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

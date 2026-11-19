@@ -1,0 +1,28 @@
+info:
+  name: "[DEV][GET] sleep_scene_ctrl"
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: https://{{AUTH_DOMAIN}}/dsiot/multireq
+  body:
+    type: json
+    data: |-
+      {
+          "requests": [
+              {
+                  "op": 2,
+                  "to": "/dsiot/edges/{{RI}}/adr_0100.scene_ctrl"
+              }
+          ]
+      }
+  auth:
+    type: bearer
+    token: "{{id_token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,41 @@
+info:
+  name: "[DEV][POST] enable_sleep_scene"
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: https://{{AUTH_DOMAIN}}/dsiot/multireq
+  body:
+    type: json
+    data: |-
+      {
+          "requests": [
+              {
+                  "op": 3,
+                  "to": "/dsiot/edges/{{RI}}/adr_0100.scene_ctrl",
+                  "pc": {
+                      "pn": "scene_ctrl",
+                      "pch": [
+                          {
+                              "pn": "active_scene",
+                              "pv": 1
+                          },
+                          {
+                              "pn": "running_time",
+                              "pv": 412
+                          }
+                      ]
+                  }
+              }
+          ]
+      }
+  auth:
+    type: bearer
+    token: "{{id_token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
